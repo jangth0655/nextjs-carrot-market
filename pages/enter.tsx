@@ -1,20 +1,42 @@
+import useMutation from "@libs/client/useMutation";
+import { cls } from "@libs/client/utils";
+import Button from "@components/button";
+import Input from "@components/input";
 import type { NextPage } from "next";
 import { useState } from "react";
-import Button from "../components/button";
-import Input from "../components/input";
-import { cls } from "../libs/client/utils";
+import { useForm } from "react-hook-form";
+
+interface EnterForm {
+  email?: string;
+  phone?: string;
+}
+
+interface EnterResult {
+  ok: boolean;
+  [key: string]: any;
+}
 
 const Enter: NextPage = () => {
+  const [enter, { data, loading, error }] =
+    useMutation<EnterResult>("/api/users/enter");
+  const { register, handleSubmit, reset } = useForm<EnterForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => {
     setMethod("email");
+    reset();
   };
   const onPhoneClick = () => {
     setMethod("phone");
+    reset();
   };
 
+  const onValid = async (data: EnterForm) => {
+    enter(data);
+  };
+  console.log(data, loading, error);
+
   return (
-    <div className="mt-16 px-4">
+    <div className="max-w-xl m-auto mt-16 px-4 h-screen">
       <h3 className="text-center text-3xl font-bold">Enter to Carrot</h3>
       <div className="mt-12">
         <div className="flex flex-col items-center">
@@ -44,12 +66,23 @@ const Enter: NextPage = () => {
             </button>
           </div>
         </div>
-        <form className="mt-8 flex flex-col space-y-4">
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="mt-8 flex flex-col space-y-4"
+        >
           {method === "email" ? (
-            <Input name="email" label="Email address" type="email" required />
+            <Input
+              register={register("email")}
+              name="email"
+              label="Email address"
+              type="email"
+              required
+            />
           ) : null}
+
           {method === "phone" ? (
             <Input
+              register={register("phone")}
               name="phone"
               label="Phone number"
               type="number"
@@ -57,6 +90,7 @@ const Enter: NextPage = () => {
               required
             />
           ) : null}
+
           {method === "email" ? <Button text={"Get login link"} /> : null}
           {method === "phone" ? (
             <Button text={"Get one-time password"} />

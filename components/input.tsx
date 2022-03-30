@@ -1,4 +1,4 @@
-//import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 type Kind = "text" | "phone" | "price";
 
@@ -6,9 +6,9 @@ interface InputProps {
   label: string;
   name: string;
   kind?: Kind;
-  register?: any;
-  [key: string]: any;
+  register?: UseFormRegisterReturn;
   required?: boolean;
+  [key: string]: any;
 }
 
 export default function Input({
@@ -34,7 +34,6 @@ export default function Input({
             id={name}
             {...register}
             required={required}
-            {...rest}
             type={type}
             className="w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
           />
@@ -50,7 +49,6 @@ export default function Input({
             id={name}
             {...register}
             required={required}
-            {...rest}
             className="w-full appearance-none rounded-md border border-gray-300 px-3 py-2 pl-7 placeholder-gray-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
           />
           <div className="pointer-events-none absolute right-0 flex items-center pr-3">
@@ -64,11 +62,11 @@ export default function Input({
             +82
           </span>
           <input
+            {...register}
             type={type}
             id={name}
             {...register}
             required={required}
-            {...rest}
             className="w-full appearance-none rounded-md rounded-l-none border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
           />
         </div>
