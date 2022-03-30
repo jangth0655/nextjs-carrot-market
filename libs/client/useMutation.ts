@@ -20,14 +20,13 @@ export default function useMutation<T>(url: string): UseMutationResult<T> {
       const response = await (
         await fetch(url, {
           method: "POST",
-          headers: {
-            contentType: "application/json",
-          },
           body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
       ).json();
       setState((prev) => ({ ...prev, data: response }));
-      setState((prev) => ({ ...prev, loading: false }));
     } catch (error) {
       setState((prev) => ({ ...prev, error }));
     } finally {
