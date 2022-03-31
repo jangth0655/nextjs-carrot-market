@@ -20,24 +20,23 @@ const handler = async (
   });
   if (!foundToken) {
     return res.status(404).json({ ok: false, error: "User does not found" });
+  } else {
+    req.session.user = {
+      id: foundToken.userId,
+    };
+    await req.session.save();
+    await client.token.deleteMany({
+      where: {
+        userId: foundToken.userId,
+      },
+    });
+    return res.json({ ok: true });
   }
-  req.session.user = {
-    id: foundToken.userId,
-  };
-
-  await req.session.save();
-
-  await client.token.deleteMany({
-    where: {
-      userId: foundToken.userId,
-    },
-  });
-  return res.json({ ok: true });
 };
 
 export default withApiSession(
   withHandler({
-    method: "POST",
+    method: ["POST"],
     handler,
     isPrivate: false,
   })

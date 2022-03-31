@@ -9,7 +9,7 @@ type Method = "GET" | "POST" | "DELETE";
 type Handler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>;
 
 interface ConfigType {
-  method: Method;
+  method: Method[];
   handler: Handler;
   isPrivate?: boolean;
 }
@@ -20,7 +20,7 @@ export default function withHandler({
   isPrivate = true,
 }: ConfigType) {
   return async function (req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== method) {
+    if (req.method && !method.includes(req.method as Method)) {
       return res.status(405).json({ error: "Request method is not correct" });
     }
     if (isPrivate && !req.session.user) {
