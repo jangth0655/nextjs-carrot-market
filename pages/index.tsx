@@ -6,7 +6,7 @@ import FloatingButton from "../components/floating-button";
 import Item from "../components/item";
 import Layout from "../components/layout";
 
-interface ProductWithFav extends Product {
+export interface ProductWithFav extends Product {
   _count: {
     favs: number;
   };

@@ -1,4 +1,4 @@
-import { ProductWithFavs } from "pages";
+import { ProductWithFav } from "pages";
 import useSWR from "swr";
 import Item from "./item";
 
@@ -8,7 +8,7 @@ interface ProductListProps {
 
 interface Record {
   id: number;
-  product: ProductWithFavs;
+  product: ProductWithFav;
 }
 
 interface ProductListResponse {
@@ -19,12 +19,13 @@ export default function ProductList({ kind }: ProductListProps) {
   const { data } = useSWR<ProductListResponse>(`/api/users/me/${kind}`);
   return data ? (
     <>
-      {data[kind]?.map((record) => (
+      {data[kind].map((record) => (
         <Item
-          id={record?.product.id}
-          key={record?.id}
+          id={record?.product?.id}
+          key={record.id}
           title={record?.product?.name}
           price={record?.product?.price}
+          comments={1}
           hearts={record?.product?._count.favs}
         />
       ))}
