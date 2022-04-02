@@ -20,6 +20,8 @@ interface StreamMessage {
 
 interface StreamWithMessage extends Stream {
   messages: StreamMessage[];
+  cloudflareKey: string;
+  cloudflareUrl: string;
 }
 
 interface StreamResponse {
@@ -78,7 +80,16 @@ const StreamPage: NextPage = () => {
   return (
     <Layout canGoBack>
       <div className="space-y-4 py-10  px-4">
-        <div className="aspect-video w-full rounded-md bg-slate-300 shadow-sm" />
+        {data?.stream.cloudflareId ? (
+          <iframe
+            className="w-full h-80 rounded-md shadow-sm bg-slate-300 aspect-video"
+            src={`https://iframe.videodelivery.net/${data?.stream.cloudflareId}`}
+            //height="720"
+            //width="1280"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowFullScreen={true}
+          ></iframe>
+        ) : null}
         <div className="mt-5">
           <h1 className="text-3xl font-bold text-gray-900">
             {data?.stream.name}
@@ -87,6 +98,17 @@ const StreamPage: NextPage = () => {
             $ {data?.stream.price}
           </span>
           <p className=" my-6 text-gray-700">{data?.stream.description}</p>
+          <div className="bg-orange-400 p-5 rounded-md overflow-scroll flex flex-col space-y-3">
+            <span>Stream Keys (secret)</span>
+            <span className="text-white">
+              <span className="font-medium text-gray-800">URL:</span>{" "}
+              {data?.stream.cloudflareUrl}
+            </span>
+            <span className="text-white">
+              <span className="font-medium text-gray-800">Key:</span>{" "}
+              {data?.stream.cloudflareKey}
+            </span>
+          </div>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>

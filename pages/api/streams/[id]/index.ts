@@ -9,6 +9,7 @@ const handler = async (
 ) => {
   const {
     query: { id },
+    session: { user },
   } = req;
 
   const stream = await client.stream.findUnique({
@@ -32,6 +33,11 @@ const handler = async (
   });
   if (!stream) {
     return res.status(404).json({ ok: false, error: "Not found" });
+  }
+  const isOwner = stream.userId === user?.id;
+  if (stream && !isOwner) {
+    stream.cloudflareKey = "xxxxx";
+    stream.cloudflareUrl = "xxxxx";
   }
   return res.status(200).json({ ok: true, stream });
 };

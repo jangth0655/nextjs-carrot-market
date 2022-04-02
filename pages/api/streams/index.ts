@@ -12,25 +12,49 @@ const handler = async (
     body: { price, name, description },
   } = req;
   if (req.method === "POST") {
-    const stream = await client.stream.create({
-      data: {
-        price,
-        name,
-        description,
-        user: {
-          connect: {
-            id: user?.id,
+    try {
+      const {
+        result: {
+          uid,
+          rtmps: { streamKey, url },
+        },
+      } = await (
+        await fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ID}/stream/live_inputs`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.CF_STREAM_TOKEN}`,
+            },
+            body: `{"meta": {"name":"${name}"},"recording": { "mode": "automatic", "timeoutSeconds": 10}}`,
+          }
+        )
+      ).json();
+      const stream = await client.stream.create({
+        data: {
+          cloudflareId: uid,
+          cloudflareKey: streamKey,
+          cloudflareUrl: url,
+          price,
+          name,
+          description,
+          user: {
+            connect: {
+              id: user?.id,
+            },
           },
         },
-      },
-    });
-    return res.status(201).json({ ok: true, stream });
+      });
+      return res.status(201).json({ ok: true, stream });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ ok: false, e });
+    }
   }
   if (req.method === "GET") {
     //pagination
     const streams = await client.stream.findMany({
       take: 5,
-      skip: 10,
     });
     if (!streams) {
       return res.status(404).json({ ok: false, error: "Not found" });

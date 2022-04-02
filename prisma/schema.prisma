@@ -164,6 +164,9 @@ model Stream {
   name String
   description String @db.MediumText
   price Int
+  cloudflareId String
+  cloudflareUrl String
+  cloudflareKey String
   messages Message[]
 }
 
