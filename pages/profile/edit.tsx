@@ -71,6 +71,7 @@ const EditProfile: NextPage = () => {
         email,
         phone,
         name,
+        avatarId: null,
       });
     }
   };
