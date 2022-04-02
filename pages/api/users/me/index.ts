@@ -9,7 +9,7 @@ const handler = async (
 ) => {
   const {
     session: { user },
-    body: { email, phone, name },
+    body: { email, phone, name, avatarId },
   } = req;
   if (req.method === "GET") {
     const profile = await client.user.findUnique({
@@ -89,6 +89,17 @@ const handler = async (
         },
         data: {
           name,
+        },
+      });
+    }
+
+    if (avatarId) {
+      await client.user.update({
+        where: {
+          id: user?.id,
+        },
+        data: {
+          avatar: avatarId,
         },
       });
     }
