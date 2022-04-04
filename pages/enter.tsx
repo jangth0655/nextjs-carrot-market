@@ -6,6 +6,9 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+
+const Bs = dynamic(() => import("@components/bs"), { ssr: false });
 
 interface EnterForm {
   email?: string;
@@ -121,14 +124,17 @@ const Enter: NextPage = () => {
               ) : null}
 
               {method === "phone" ? (
-                <Input
-                  register={register("phone")}
-                  name="phone"
-                  label="Phone number"
-                  type="number"
-                  kind="phone"
-                  required
-                />
+                <>
+                  <Bs hello="Hello" />
+                  <Input
+                    register={register("phone")}
+                    name="phone"
+                    label="Phone number"
+                    type="number"
+                    kind="phone"
+                    required
+                  />
+                </>
               ) : null}
 
               {method === "email" ? <Button text={"Get login link"} /> : null}

@@ -7,7 +7,6 @@ import { Stream } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
 import useUser from "@libs/client/useUser";
-import { useEffect } from "react";
 
 interface StreamMessage {
   message: string;

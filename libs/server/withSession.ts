@@ -1,4 +1,4 @@
-import { withIronSessionApiRoute } from "iron-session/next";
+import { withIronSessionApiRoute, withIronSessionSsr } from "iron-session/next";
 
 declare module "iron-session" {
   interface IronSessionData {
@@ -9,10 +9,14 @@ declare module "iron-session" {
 }
 
 const cookieOption = {
-  cookieName: "carrot-session",
+  cookieName: "carrotSession",
   password: process.env.COOKIE_PASSWORD!,
 };
 
 export function withApiSession(fn: any) {
   return withIronSessionApiRoute(fn, cookieOption);
+}
+
+export function withSsrSession(handler: any) {
+  return withIronSessionSsr(handler, cookieOption);
 }

@@ -1,10 +1,12 @@
-import type { NextPage } from "next";
+import type { NextPage, NextPageContext } from "next";
 import Link from "next/link";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { Review, User } from "@prisma/client";
 import { cls } from "@libs/client/utils";
+import Image from "next/image";
+import { withSsrSession } from "@libs/server/withSession";
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -23,10 +25,15 @@ const Profile: NextPage = () => {
       <div className="px-4">
         <div className="mt-4 flex items-center space-x-3">
           {user?.profile.avatar ? (
-            <img
-              src={`https://imagedelivery.net/h3kJx8b63YkXouCAFpwF5w/${user?.profile.avatar}/avatar`}
-              className="h-16 w-16 rounded-full bg-slate-500"
-            />
+            <div className="relative h-16 w-16 ">
+              <Image
+                src={`https://imagedelivery.net/h3kJx8b63YkXouCAFpwF5w/${user?.profile.avatar}/avatar`}
+                className="rounded-full bg-slate-500 object-cover"
+                layout="fill"
+                priority={true}
+                alt="profile"
+              />
+            </div>
           ) : (
             <div className="h-16 w-16 rounded-full bg-slate-500" />
           )}
@@ -148,4 +155,35 @@ const Profile: NextPage = () => {
     </Layout>
   );
 };
-export default Profile;
+
+const Page: NextPage<{ profile: User }> = ({ profile }) => {
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          "/api/users/me": {
+            ok: true,
+            profile,
+          },
+        },
+      }}
+    >
+      <Profile />
+    </SWRConfig>
+  );
+};
+
+export const getServerSideProps = withSsrSession(
+  async ({ req }: NextPageContext) => {
+    const profile = await client?.user.findUnique({
+      where: { id: req?.session.user?.id },
+    });
+    return {
+      props: {
+        profile: JSON.parse(JSON.stringify(profile)),
+      },
+    };
+  }
+);
+
+export default Page;

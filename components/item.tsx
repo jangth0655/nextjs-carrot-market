@@ -7,7 +7,7 @@ interface ItemProps {
   price: number;
   comments?: number;
   hearts: number;
-  image: string | null;
+  image?: string | null;
 }
 
 export default function Item({ title, price, image, hearts, id }: ItemProps) {
@@ -21,6 +21,7 @@ export default function Item({ title, price, image, hearts, id }: ItemProps) {
                 src={`https://imagedelivery.net/h3kJx8b63YkXouCAFpwF5w/${image}/avatar`}
                 className="rounded-md object-cover bg-gray-400"
                 layout="fill"
+                priority={true}
               />
             </div>
           ) : (
